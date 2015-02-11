@@ -1,15 +1,32 @@
-## Put comments here that give an overall description of what your
-## functions do
+## CacheMatrix is a matrix wrapper that can cache the inverse of the matrix.
+## Call cacheSolve() fuction instead of solve() one to benefit from the feature.
 
-## Write a short comment describing this function
+## Initializes a matrix wrapper that can cache the inverse of itself.
 
 makeCacheMatrix <- function(x = matrix()) {
-
+  inverse <- NULL
+  set <- function(cmatrix) {
+    x <<- cmatrix
+    inverse <<- NULL
+  }
+  get <- function() x
+  setinverse <- function(imatrix) inverse <<- imatrix
+  getinverse <- function() inverse
+  list(set = set, get = get,
+       setinverse = setinverse,
+       getinverse = getinverse)
 }
 
 
-## Write a short comment describing this function
+## Returns the inverse of a matrix wrapped with CacheMatrix.
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  inverse <- x$getinverse()
+  if(!is.null(inverse)) {
+    return(inverse)
+  }
+  cmatrix <- x$get()
+  inverse <- solve(cmatrix, ...)
+  x$setinverse(inverse)
+  inverse
 }
